@@ -28,11 +28,9 @@ interface SetorProps {
 export default function Signup() {
   const router = useRouter();
   
-  // Estados para os dados da API
   const [instituicoes, setInstituicoes] = useState<Option[]>([]);
   const [setores, setSetores] = useState<Option[]>([]);
   
-  // Estados para as seleções do usuário
   const [selectedInstituicao, setSelectedInstituicao] = useState<Option | null>(null);
   const [selectedSetor, setSelectedSetor] = useState<Option | null>(null);
   
@@ -51,7 +49,6 @@ export default function Signup() {
           api.get("/listsetores", config)
         ]);
 
-        // Mapeando dados para o formato do React Select { value, label }
         const instData = resInstituicoes.data?.instituicoes || resInstituicoes.data || [];
         setInstituicoes(instData.map((item: InstituicaoUnidadeProps) => ({
           value: item.id,
@@ -65,28 +62,28 @@ export default function Signup() {
         })));
 
       } catch (err: any) {
-        setError("Erro ao carregar dados. Verifique sua conexão.");
+        setError("Erro ao carregar dados.");
         toast.error("Falha ao carregar listas.");
       } finally {
         setLoading(false);
       }
     }
-
     loadResources();
   }, []);
 
   async function handleRegister(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
-
-    const formData = new FormData(event.currentTarget);
+    
+    const formElement = event.currentTarget;
+    const formData = new FormData(formElement);
+    
     const name = formData.get("name");
     const email = formData.get("email");
     const password = formData.get("password");
 
-    // Validação
     if (!name || !email || !password || !selectedInstituicao || !selectedSetor) {
-      toast.warning("Preencha todos os campos, incluindo as seleções.");
+      toast.warning("Preencha todos os campos obrigatórios.");
       return;
     }
 
@@ -99,11 +96,11 @@ export default function Signup() {
         setor_id: selectedSetor.value,
       });
 
-      toast.success("Usuário cadastrado com sucesso!");
+      toast.success('Usuário cadastrado com sucesso!');
+      formElement.reset();
       
-      setTimeout(() => {
-        router.push("/dashboard/usuarios");
-      }, 2000);
+      setSelectedInstituicao(null);
+      setSelectedSetor(null);
 
     } catch (err: any) {
       const message = err.response?.data?.error || "Erro ao cadastrar usuário.";
@@ -152,6 +149,7 @@ export default function Signup() {
                 placeholder="Selecione a unidade..."
                 isLoading={loading}
                 className={styles.reactSelect}
+                isClearable
                 noOptionsMessage={() => "Nenhuma instituição encontrada"}
               />
             </div>
@@ -165,6 +163,7 @@ export default function Signup() {
                 placeholder="Selecione o setor..."
                 isLoading={loading}
                 className={styles.reactSelect}
+                isClearable
                 noOptionsMessage={() => "Nenhum setor encontrado"}
               />
             </div>
@@ -173,10 +172,10 @@ export default function Signup() {
 
             <div className={styles.buttonGroup}>
               <button type="submit" disabled={loading} className={styles.btnRegister}>
-                {loading ? "Processando..." : "Finalizar Cadastro"}
+                {loading ? "Processando..." : "Cadastrar"}
               </button>
               <button type="button" onClick={() => router.back()} className={styles.btnBack}>
-                Cancelar
+                Voltar
               </button>
             </div>
           </form>

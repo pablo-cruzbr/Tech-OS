@@ -26,7 +26,6 @@ export default function FormularioClientesPrivados() {
     router.push('/dashboard/clientesMunicipais');
   }
 
-  // 🔹 Buscar tipos de instituição no carregamento do componente
   useEffect(() => {
     async function fetchData() {
       try {
