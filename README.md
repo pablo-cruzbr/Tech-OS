@@ -1,5 +1,5 @@
 # AlltiControl | Full-Stack Service & Asset Management
-## "Engenharia focada na eficiência: Eliminando a burocracia para escalar operações de TI."
+## "Engenharia focada na eficiência: Eliminando a burocracia na gestão de Serviços de Informática."
 
 <p align="center">
   <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white" /></a>
@@ -10,7 +10,11 @@
   <a href="https://reactnative.dev/"><img src="https://img.shields.io/badge/React_Native-61DAFB?style=for-the-badge&logo=react&logoColor=white" /></a>
 </p>
 
-## 🎯 Do Caos à Performance: A Gênese do AlltiControl
+## 🎯 Do Caos à Performance: AlltiControl
+<img width="1280" height="800" alt="download (3)" src="https://github.com/user-attachments/assets/d31a0cc7-cdcb-45d1-ba0e-5f8f706cc603" />
+
+---
+
 
 Diferente de projetos acadêmicos, o **AlltiControl** nasceu da necessidade real de campo. Identifiquei que a equipe técnica perdia tempo precioso lutando contra softwares legados fragmentados, onde um simples atendimento exigia a navegação por até 6 telas distintas.
 
@@ -64,11 +68,6 @@ Atualmente em implantação em prefeituras, escolas e postos de saúde.
 
 
 Ele foi projetado para **facilitar a rotina operacional**, organizar atendimentos e melhorar a comunicação entre técnicos e clientes.  
-
-<img width="1280" height="800" alt="download (3)" src="https://github.com/user-attachments/assets/d31a0cc7-cdcb-45d1-ba0e-5f8f706cc603" />
-
----
-
 
 <img width="1280" height="800" alt="Carrossel portifolio" src="https://github.com/user-attachments/assets/cee8fcad-7cb3-4bbf-af7f-5f40c1ed6085" />
 ---
