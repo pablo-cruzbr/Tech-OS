@@ -2,51 +2,65 @@ import { createGroq } from "@ai-sdk/groq";
 import { generateText, tool } from "ai";
 import { z } from "zod";
 import { ListTecnicoService } from "../../../services/status_categorias/tecnico/ListTecnicoService";
-import { NextResponse } from "next/server";
+import { Request, Response } from "express";
 
 const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
-export async function POST(request: Request) {
-  try {
-    const { question } = await request.json();
+class AIChatController {
+  async handle(req: Request, res: Response) {
+    try {
+      const { question } = req.body;
 
+      if (!question) {
+        return res.status(400).json({ error: "Pergunta é obrigatória" });
+      }
+
+      const listService = new ListTecnicoService();
+
+      // Forçamos o objeto todo como any para evitar que o TS bloqueie propriedades do Agente
     const result = await generateText({
-      model: groq("llama-3.3-70b-versatile"),
-      system: `Você é o assistente técnico do AlltiControl.
-      Sua missão é consultar o banco de dados e responder dúvidas sobre a equipe técnica.
-      
-      Regras:
-      1. Para perguntas sobre quem são os técnicos ou quantos existem, use a tool 'getTecnicos'.
-      2. Responda sempre de forma amigável, estilo instrutor da Rocketseat.
-      3. Se não houver técnicos, diga que a equipe ainda não foi cadastrada.`,
-      
-      prompt: question,
-      
-      tools: {
-        getTecnicos: tool({
-          description: "Lista todos os técnicos e retorna o total cadastrado no AlltiControl.",
-          parameters: z.object({}), // Sem parâmetros por enquanto, como no seu Service
-          execute: async () => {
-            // Reutilizando seu Service original!
-            const listService = new ListTecnicoService();
-            const data = await listService.execute();
-            
-            return {
-              tecnicos: data.controles,
-              total: data.total
-            };
-          },
-        }),
-      },
-      maxSteps: 5, // Permite que a IA chame a tool e depois formule a resposta
-    });
+        model: groq("llama-3.3-70b-versatile") as any,
+        maxSteps: 5, 
+        // Mudamos o system para ele entender que a tool é só o começo
+        system: `Você é o assistente do AlltiControl.
+        Sua tarefa é:
+        1. Usar a ferramenta 'getTecnicos' para obter dados.
+        2. EXIBIR os dados obtidos de forma clara para o usuário.
+        3. Nunca responda com texto vazio. Se recebeu dados, escreva-os em português.`,
+        prompt: question,
+        tools: {
+          getTecnicos: {
+            description: "Lista os técnicos e o total.",
+            parameters: z.object({}),
+            execute: async () => {
+              console.log("--- BUSCANDO NO BANCO ---");
+              const data = await listService.execute();
+              // Retornamos uma string simples para facilitar o entendimento da IA
+              return `Temos ${data.total} técnicos. Nomes: ${data.controles.map((t: any) => t.name).join(", ")}`;
+            },
+          } as any,
+        },
+      } as any);
 
-    return NextResponse.json({ answer: result.text });
+      // Se o text vier vazio, vamos tentar pegar do objeto de resposta bruta
+      const finalAnswer = result.text || (result as any).response?.messages?.slice(-1)[0]?.content || "";
 
-  } catch (error: any) {
-    console.error("Erro no Agente:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+      console.log("DEBUG - Conteúdo bruto:", JSON.stringify(result, null, 2));
+
+      return res.json({ 
+        answer: finalAnswer || "A IA processou os dados mas não formulou uma frase. Tente perguntar novamente." 
+      });
+
+    } catch (error: any) {
+      console.error("Erro no Agente IA:", error);
+      return res.status(500).json({ 
+        error: "Erro ao gerar resposta", 
+        details: error.message 
+      });
+    }
   }
 }
+
+export { AIChatController };
