@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { api } from "@/services/api";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { Button } from "./components/Button";
 
 interface PageProps {
   searchParams: Promise<{ error?: string }>;
@@ -101,7 +102,7 @@ export default async function Home({ searchParams }: PageProps) {
               required 
               className={styles.input} 
             />
-            <button type="submit" className={styles.button}>Acessar Sistema</button>
+            <Button/>
           </form>
         </section>
       </div>
