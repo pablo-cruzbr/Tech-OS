@@ -1,8 +1,10 @@
 import { createGroq } from "@ai-sdk/groq";
-import { generateText, tool } from "ai";
+import { generateText } from "ai";
 import { z } from "zod";
-import { ListTecnicoService } from "../../../services/status_categorias/tecnico/ListTecnicoService";
 import { Request, Response } from "express";
+
+import { ListTecnicoService } from "../../../services/status_categorias/tecnico/ListTecnicoService";
+import { ListOrdemdeServicoService } from "../../../services/controles_forms/OrdemdeServico/ListOrdemdeServicoService";
 
 const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY,
@@ -12,41 +14,50 @@ class AIChatController {
   async handle(req: Request, res: Response) {
     try {
       const { question } = req.body;
+      const user_id = req.user_id;
 
       if (!question) {
         return res.status(400).json({ error: "Pergunta é obrigatória" });
       }
 
-      const listService = new ListTecnicoService();
+      const tecnicoService = new ListTecnicoService();
+      const osService = new ListOrdemdeServicoService();
 
-
-    const result = await generateText({
+      const result = await generateText({
         model: groq("llama-3.3-70b-versatile") as any,
         maxSteps: 5, 
         system: `Você é o assistente do AlltiControl.
         Sua tarefa é:
-        1. Usar a ferramenta 'getTecnicos' para obter dados.
-        2. EXIBIR os dados obtidos de forma clara para o usuário.
-        3. Nunca responda com texto vazio. Se recebeu dados, escreva-os em português.`,
+        1. Usar as ferramentas disponíveis para obter dados do sistema.
+        2. EXIBIR os dados obtidos de forma clara e profissional para o usuário.
+        3. Se recebeu dados, escreva-os sempre em português.`,
         prompt: question,
         tools: {
           getTecnicos: {
-            description: "Lista os técnicos e o total.",
+            description: "Lista o total e os nomes dos técnicos.",
             parameters: z.object({}),
             execute: async () => {
-              console.log("--- BUSCANDO NO BANCO ---");
-              const data = await listService.execute();
-              // Retornamos uma string simples para facilitar o entendimento da IA
-              return `Temos ${data.total} técnicos. Nomes: ${data.controles.map((t: any) => t.name).join(", ")}`;
+              console.log("--- BUSCANDO TÉCNICOS ---");
+              const data = await tecnicoService.execute();
+              return `Temos ${data.total} técnicos cadastrados. Nomes: ${data.controles.map((t: any) => t.name).join(", ")}.`;
+            },
+          } as any,
+
+          getEstatisticasOS: {
+            description: "Obtém a quantidade total de Ordens de Serviço.",
+            parameters: z.object({}),
+            execute: async () => {
+              console.log("--- BUSCANDO ESTATÍSTICAS DE OS ---");
+              const data = await osService.execute({ user_id });
+              return `Atualmente existem ${data.total} Ordens de Serviço no sistema.`;
             },
           } as any,
         },
       } as any);
 
-      // Se o text vier vazio, vamos tentar pegar do objeto de resposta bruta
       const finalAnswer = result.text || (result as any).response?.messages?.slice(-1)[0]?.content || "";
 
-      console.log("DEBUG - Conteúdo bruto:", JSON.stringify(result, null, 2));
+      console.log("DEBUG - Resposta Final:", finalAnswer);
 
       return res.json({ 
         answer: finalAnswer || "A IA processou os dados mas não formulou uma frase. Tente perguntar novamente." 
