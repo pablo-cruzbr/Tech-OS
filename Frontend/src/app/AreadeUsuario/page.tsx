@@ -59,7 +59,6 @@ export default function AreadeUsuario() {
       redirect("/AreadeUsuario/formularioAddTickets")
   }
   
-
   return (
     <div className={styles.container}>
       <div className={styles.formsContainer}>
