@@ -102,10 +102,11 @@ export default function FormularioAddTickets() {
   const tipodeChamado_id = formData.get('tipodeChamado_id')?.toString().trim();
   const tipodeOrdemdeServico_id = formData.get('tipodeOrdemdeServico_id')?.toString().trim();
   const descricaodoProblemaouSolicitacao = formData.get('descricaodoProblemaouSolicitacao')?.toString().trim();
+  const patrimoniodoequipamento = formData.get('patrimoniodoequipamento')?.toString().trim();
   const nomedoContatoaserProcuradonoLocal =
     formData.get('nomedoContatoaserProcuradonoLocal')?.toString().trim() || null;
 
-  if (!name || !tipodeChamado_id || !descricaodoProblemaouSolicitacao) {
+  if (!name || !tipodeChamado_id || !descricaodoProblemaouSolicitacao || !patrimoniodoequipamento) {
     alert('Preencha todos os campos obrigatórios.');
     return;
   }
@@ -129,6 +130,7 @@ export default function FormularioAddTickets() {
       name,
       tipodeChamado_id,
       descricaodoProblemaouSolicitacao,
+      patrimoniodoequipamento,
       nomedoContatoaserProcuradonoLocal,
       user_id,
     };
@@ -257,7 +259,7 @@ export default function FormularioAddTickets() {
                 <FaClipboardList className={styles.icon} />
                 <input
                   type="text"
-                  name="patrimonio" 
+                  name="patrimoniodoequipamento" 
                   placeholder="Ex: 56971"
                 />
               </div>
