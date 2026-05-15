@@ -34,6 +34,7 @@ export interface OrdemdeServicoProps {
   id: string;
   name: string;
   descricaodoProblemaouSolicitacao: string;
+  patrimoniodoequipamento?: string;
   nomedoContatoaserProcuradonoLocal?: string;
   tipodeChamado_id: string;
   tipodeOrdemdeServico_id: string;
