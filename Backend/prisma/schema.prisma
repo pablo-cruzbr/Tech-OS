@@ -178,6 +178,7 @@ model OrdemdeServico {
   id                                String                @id @default(uuid())
   name                              String?
   descricaodoProblemaouSolicitacao  String?
+  patrimoniodoequipamento           String?
   nomedoContatoaserProcuradonoLocal String?
   nameTecnico                       String?
   diagnostico                       String?
