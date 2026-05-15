@@ -90,6 +90,7 @@ class ListOrdemdeServicoService {
         numeroOS: true,
         name: true,
         descricaodoProblemaouSolicitacao: true,
+        patrimoniodoequipamento: true,
         nomedoContatoaserProcuradonoLocal: true,
         created_at: true,
         updatedAt: true, 
