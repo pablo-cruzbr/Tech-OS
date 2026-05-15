@@ -135,6 +135,10 @@ const formatSecondsToHHMMSS = (secs?: number | null): string => {
     <strong>Descrição do Problema:</strong> {ordemdeServico.descricaodoProblemaouSolicitacao || "Não informada"}
   </p>
 
+   <p>
+    <strong>Nº do Patrimônio:</strong> {ordemdeServico.patrimoniodoequipamento || "Não informada"}
+  </p>
+
   <p>
     <strong>Solução Técnica:</strong> {ordemdeServico.solucao || "Sem Detalhes Técnicos"}
   </p>
