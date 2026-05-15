@@ -5,9 +5,8 @@ interface GetOSRequest {
 }
 
 class ListOrdemdeServicoId {
-    async execute({ id }: GetOSRequest) { // Recebe um objeto com o ID
+    async execute({ id }: GetOSRequest) {
 
-        // Busca uma única Ordem de Serviço pelo ID
         const ordem = await prismaClient.ordemdeServico.findUnique({
             where: {
                 id: id, 
@@ -17,6 +16,7 @@ class ListOrdemdeServicoId {
                 numeroOS: true,
                 name: true,
                 descricaodoProblemaouSolicitacao: true,
+                patrimoniodoequipamento: true,
                 nomedoContatoaserProcuradonoLocal: true,
                 created_at: true,
                 updatedAt: true,
@@ -102,7 +102,7 @@ class ListOrdemdeServicoId {
             },
         });
 
-        return ordem; // Retorna o objeto da OS ou null se não for encontrado
+        return ordem; 
     }
 }
 
