@@ -1,0 +1,242 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
+
+// Variáveis de Estilo
+$primary-purple: #4E3182;
+$text-gray: #444;
+$bg-input: #f0f0f0;
+$white: #fff;
+$transition-fast: 0.3s ease;
+
+.container {
+  position: relative;
+  width: 100%;
+  background-color: $white;
+  min-height: 100vh;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+
+  &::before {
+    content: "";
+    position: absolute;
+    height: 2000px;
+    width: 2000px;
+    top: -10%;
+    right: 48%;
+    transform: translateY(-50%);
+    background-image: linear-gradient(-45deg, $primary-purple 0%, $primary-purple 100%);
+    border-radius: 50%;
+    transition: 1.8s ease-in-out;
+    z-index: 0;
+  }
+}
+
+// --- ESTRUTURA DO MODAL ---
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background: $white;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  border-radius: 28px;
+  padding: 35px;
+  position: relative;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  animation: modalScaleIn 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+
+  .closeModal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: $primary-purple;
+    cursor: pointer;
+    transition: $transition-fast;
+    &:hover { transform: rotate(90deg); opacity: 0.7; }
+  }
+}
+
+// --- FORMULÁRIO ---
+.signInForm {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .title {
+    font-size: 1.6rem;
+    color: $primary-purple;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  p {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: $text-gray;
+    margin: 12px 0 6px 15px;
+    text-align: left;
+  }
+}
+
+.inputField {
+  width: 100%;
+  height: 50px;
+  display: grid;
+  grid-template-columns: 15% 85%;
+  background-color: $bg-input;
+  border-radius: 50px;
+  padding: 0 1rem;
+  align-items: center;
+  transition: $transition-fast;
+
+  &:focus-within {
+    background-color: darken($bg-input, 3%);
+    box-shadow: 0 0 0 2px rgba($primary-purple, 0.1);
+  }
+
+  .icon {
+    color: #acacac;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  input, .select, textarea {
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    width: 100%;
+
+    &::placeholder { color: #aaa; }
+  }
+
+  &.textArea {
+    height: auto;
+    min-height: 120px;
+    border-radius: 20px;
+    align-items: flex-start;
+    padding: 15px 1rem;
+
+    textarea {
+      height: 100px;
+      resize: none;
+      line-height: 1.5;
+    }
+  }
+}
+
+// --- PAINEL ROXO (ESQUERDA) ---
+.panelsContainer {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  z-index: 5;
+}
+
+.panel {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5%;
+  color: $white;
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    h3 { font-size: 1.8rem; font-weight: 700; }
+    h4 { font-size: 1.2rem; opacity: 0.9; }
+    p { font-size: 1rem; line-height: 1.6; opacity: 0.8; margin-bottom: 10px; }
+  }
+}
+
+.usuarioBox {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+  max-width: 380px;
+
+  h3 { font-size: 1.1rem !important; margin-bottom: 10px !important; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 5px; }
+  
+  .usuarioInfo p {
+    font-size: 0.9rem;
+    margin: 5px 0;
+    strong { color: $white; }
+  }
+}
+
+// --- BOTÕES ---
+.btn {
+  width: 180px;
+  height: 50px;
+  border: none;
+  border-radius: 50px;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition-fast;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  &.solid {
+    background-color: $primary-purple;
+    color: $white;
+    width: 100%; // No modal o botão de enviar ocupa tudo
+    margin-top: 20px;
+    &:hover { background-color: lighten($primary-purple, 5%); transform: translateY(-2px); }
+  }
+
+  &.transparent {
+    background: none;
+    border: 2px solid $white;
+    color: $white;
+    &:hover { background: $white; color: $primary-purple; }
+  }
+
+  &:disabled { opacity: 0.7; cursor: not-allowed; }
+}
+
+// --- ANIMAÇÕES ---
+@keyframes modalScaleIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: $white;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }

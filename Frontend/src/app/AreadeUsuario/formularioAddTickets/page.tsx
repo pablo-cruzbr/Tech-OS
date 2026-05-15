@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/services/api';
 import { getCookieClient } from '@/lib/cookieClient';
-import styles from '../logindeUsuario.module.scss';
-import { FaClipboardList } from 'react-icons/fa';
+import styles from '../formularioAddTickets.module.scss'
+import { FaClipboardList, FaTimes } from 'react-icons/fa';
 import { JwtPayload } from '@/lib/JWTpayload.type';
 import { UsuariosProps } from '@/lib/getUsuario.type';
 import { jwtDecode } from 'jwt-decode';
@@ -24,6 +24,7 @@ interface TipoDeOrdemdeServico {
 export default function FormularioAddTickets() {
   const [tiposDeChamado, setTiposDeChamado] = useState<TipoDeChamado[]>([]);
   const [tipodeOrdemdeServico, setTipodeOrdemdeServico] = useState<TipoDeOrdemdeServico[]>([])
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [usuario, setUsuario] = useState<UsuariosProps | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -149,126 +150,126 @@ export default function FormularioAddTickets() {
 }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.formsContainer}>
-        <div className={styles.signinSignup}>
-          <form onSubmit={handleSubmit} className={styles.signInForm}>
-            <h2 className={styles.title}>Abrir Ordem de Serviço</h2>
+  <div className={styles.container}>
+    <div className={styles.panelsContainer}>
+      
+      {/* PAINEL ESQUERDO (ROXO) - Focado em Info do Usuário */}
+      <div className={`${styles.panel} ${styles.leftPanel}`}>
+        <div className={styles.content}>
+          <h3>Bem Vindo ao AlltiControl</h3>
+          <p>
+            Gerencie suas solicitações de forma rápida <br /> 
+            e integrada ao nosso sistema.
+          </p>
 
-            <p>Coloque seu Nome</p>
-            <div className={styles.inputField}>
-              <FaClipboardList className={styles.icon} />
-              <input type="text" name="name" placeholder="Nome do Cliente" required />
+          {usuario && (
+            <div className={styles.usuarioBox}>
+              <h3>Usuário Logado</h3>
+              <div className={styles.usuarioInfo}>
+                <p><strong>Nome:</strong> {usuario.name}</p>
+                <p><strong>Setor:</strong> {usuario.setor?.name || "Desenvolvedor Fullstack"}</p>
+              </div>
             </div>
-
-            <p>Selecione o Tipo de Ordem de Serviço</p>
-            <div className={styles.inputField}>
-              <FaClipboardList className={styles.icon} />
-              <select name="tipodeOrdemdeServico_id" required className={styles.select}>
-                <option value="" disabled hidden>
-                  Selecione o Tipo de Ordem de Servico
-                </option>
-                {tipodeOrdemdeServico.map((tipo) => (
-                  <option key={tipo.id} value={tipo.id}>
-                    {tipo.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <p>Selecione o Tipo de Chamado</p>
-            <div className={styles.inputField}>
-              <FaClipboardList className={styles.icon} />
-              <select name="tipodeChamado_id" required className={styles.select}>
-                <option value="" disabled hidden>
-                  Selecione o Tipo de Chamado
-                </option>
-                {tiposDeChamado.map((tipo) => (
-                  <option key={tipo.id} value={tipo.id}>
-                    {tipo.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <p>Adicione a Descrição do Problema</p>
-            <div className={styles.inputField}>
-              <FaClipboardList className={styles.icon} />
-              <textarea
-                name="descricaodoProblemaouSolicitacao"
-                placeholder="Descrição do Problema ou Solicitação"
-                rows={4}
-                required
-                className={styles.textarea}
-              />
-            </div>
-
-            <div className={styles.inputField}>
-              <FaClipboardList className={styles.icon} />
-              <input
-                type="text"
-                name="nomedoContatoaserProcuradonoLocal"
-                placeholder="Nome do Contato no Local (opcional)"
-              />
-            </div>
-
-           <button 
-            type="submit" 
-            className={`${styles.btn} ${styles.solid}`} 
-            disabled={loading} 
-          >
-            {loading ? "Enviando..." : "Enviar Ordem"} 
-          </button>
-          </form>
+          )}
         </div>
       </div>
 
-      <div className={styles.panelsContainer}>
-        <div className={`${styles.panel} ${styles.leftPanel}`}>
-          <div className={styles.content}>
-            <h3>Bem Vindo ao AlltiControl</h3>
-            <p>
-              Selecione o tipo de chamado, preencha os campos <br /> e clique em
-              enviar que receberemos sua solicitação.
-            </p>
-            {usuario && (
-              <div className={styles.usuarioBox}>
-                <h3>Usuário Logado</h3>
-                <div className={styles.usuarioInfo}>
-                  <p>
-                    <strong>Nome:</strong> {usuario.name}
-                  </p>
-                  <p>
-                    <strong>Setor:</strong> {usuario.setor?.name || "Setor não informado"}
-                  </p>
-
-                  {usuario.cliente?.name && usuario.cliente?.endereco && (
-                    <>
-                      <p>
-                        <strong>Empresa:</strong> {usuario.cliente.name}
-                      </p>
-                      <p>
-                        <strong>Endereço:</strong> {usuario.cliente.endereco}
-                      </p>
-                    </>
-                  )}
-
-                  {usuario.instituicaoUnidade?.name && usuario.instituicaoUnidade?.endereco && (
-                    <>
-                      <p>
-                        <strong>Instituição:</strong> {usuario.instituicaoUnidade.name}
-                      </p>
-                      <p>
-                        <strong>Endereço:</strong> {usuario.instituicaoUnidade.endereco}
-                      </p>
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+      {/* PAINEL DIREITO (BRANCO) - Focado na Ação de Nova Ordem */}
+      <div className={`${styles.panel} ${styles.rightPanel}`}>
+        <div className={styles.content}>
+          <h3 style={{ color: '#444' }}>Abra sua Ordem de Serviço</h3>
+          <p style={{ color: '#666' }}>
+            Clique no botão abaixo para iniciar <br /> o preenchimento da sua solicitação.
+          </p>
+          
+          <button 
+            className={`${styles.btn} ${styles.solid}`} 
+            onClick={() => setIsModalOpen(true)}
+          >
+            Nova Ordem
+          </button>
         </div>
       </div>
     </div>
-  );
+
+    {/* MODAL DE FORMULÁRIO */}
+    {isModalOpen && (
+      <div className={styles.modalOverlay}>
+        <div className={styles.modalContent}>
+          <button className={styles.closeModal} onClick={() => setIsModalOpen(false)}>
+            <FaTimes />
+          </button>
+          
+          <div className={styles.signinSignup}>
+            <form onSubmit={handleSubmit} className={styles.signInForm}>
+              <h2 className={styles.title}>Nova Ordem de Serviço</h2>
+
+              <p>Nome do Cliente / Solicitante</p>
+              <div className={styles.inputField}>
+                <FaClipboardList className={styles.icon} />
+                <input type="text" name="name" placeholder="Nome completo" required />
+              </div>
+
+              <p>Tipo de Ordem de Serviço</p>
+              <div className={styles.inputField}>
+                <FaClipboardList className={styles.icon} />
+                <select name="tipodeOrdemdeServico_id" required className={styles.select}>
+                  <option value="" disabled hidden>Selecione o Tipo de OS</option>
+                  {tipodeOrdemdeServico.map((tipo) => (
+                    <option key={tipo.id} value={tipo.id}>{tipo.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <p>Tipo de Chamado</p>
+              <div className={styles.inputField}>
+                <FaClipboardList className={styles.icon} />
+                <select name="tipodeChamado_id" required className={styles.select}>
+                  <option value="" disabled hidden>Selecione o Tipo de Chamado</option>
+                  {tiposDeChamado.map((tipo) => (
+                    <option key={tipo.id} value={tipo.id}>{tipo.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <p>Descrição Detalhada</p>
+              <div className={`${styles.inputField} ${styles.textArea}`}>
+                <FaClipboardList className={styles.icon} />
+                <textarea
+                  name="descricaodoProblemaouSolicitacao"
+                  placeholder="Descreva o problema detalhadamente..."
+                  required
+                />
+              </div>
+
+              <p>Contato no Local (Opcional)</p>
+              <div className={styles.inputField}>
+                <FaClipboardList className={styles.icon} />
+                <input
+                  type="text"
+                  name="nomedoContatoaserProcuradonoLocal"
+                  placeholder="Nome de quem procurar no local"
+                />
+              </div>
+
+              <p>Patrimônio do Equipamento</p>
+              <div className={styles.inputField}>
+                <FaClipboardList className={styles.icon} />
+                <input
+                  type="text"
+                  name="patrimonio" 
+                  placeholder="Ex: 56971"
+                />
+              </div>
+
+              <button type="submit" className={`${styles.btn} ${styles.solid}`} disabled={loading}>
+                {loading ? <div className={styles.spinner} /> : "Enviar Ordem"}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+);
 }
