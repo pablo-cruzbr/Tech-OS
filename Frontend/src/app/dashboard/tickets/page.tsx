@@ -17,11 +17,17 @@ async function getTickets(): Promise<OrdemdeServicoResponseData> {
     });
 
     console.log(response);
-    return response.data || { controles: [], total: 0, totalAberta: 0, totalConcluida: 0, totalEmAndamento: 0 };
+    return response.data || { controles: [], total: 0, totalAberta: 0, totalEmDeslocamento: 0, totalConcluida: 0, totalEmAndamento: 0 };
 
   } catch (err) {
     console.error(err);
-    return {controles: [], total: 0, totalAberta: 0, totalConcluida: 0, totalEmAndamento: 0, totalPausada: 0,
+    return {controles: [], 
+    total: 0, 
+    totalAberta: 0, 
+    totalEmDeslocamento: 0,
+    totalConcluida: 0, 
+    totalEmAndamento: 0, 
+    totalPausada: 0,
     totalTicket: 0,
     totalOrdemdeServico: 0 }; 
   }
