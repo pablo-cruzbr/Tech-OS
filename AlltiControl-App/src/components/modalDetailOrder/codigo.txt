@@ -693,6 +693,13 @@ const isDisabled = selectedImages.length === 0;
     <Text style={{ color: '#666', fontStyle: 'italic', marginBottom: 10 }}>
       Nenhuma assinatura coletada para esta ordem.
     </Text>
+    <TouchableOpacity 
+      style={styles.buttonSignatureOpen} 
+      onPress={() => setShowSignatureModal(true)}
+    >
+      <MaterialIcons name="edit" size={20} color="#fff" />
+      <Text style={styles.buttonText}>COLETAR ASSINATURA</Text>
+    </TouchableOpacity>
   </View>
 )}
 

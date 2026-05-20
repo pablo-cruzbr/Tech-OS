@@ -105,7 +105,7 @@ useEffect(() => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      Alert.alert('Sucesso', 'Ordem de Serviço finalizada com sucesso!');
+      Alert.alert('Sucesso', 'Dados Salvos com sucesso!');
       handleCloseModal();
     } catch (error: any) {
       console.error("Erro no envio:", error.response?.data || error.message);
@@ -197,7 +197,7 @@ useEffect(() => {
               onPress={handleSubmit}
               disabled={loading || !signature || !assinante}
             >
-              {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>FINALIZAR ORDEM</Text>}
+              {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Salvar PROGRESSO</Text>}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.buttonClose} onPress={handleCloseModal}>
