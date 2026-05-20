@@ -36,19 +36,21 @@ class ExportOrdemdeServicoController {
     ];
 
     // 4. Mapeamos os dados do banco para as linhas do Excel
-    controles.forEach((os) => {
-      worksheet.addRow({
-        numeroOS: os.numeroOS || "N/A",
-        created_at: os.created_at ? new Date(os.created_at).toLocaleString('pt-BR') : "",
-        tarefa: os.tarefa?.name || "Não definida",
-        cliente: os.cliente?.name || "Sem Cliente",
-        unidade: os.instituicaoUnidade?.name || "Sem Unidade",
-        tecnico: os.tecnico?.name || os.nameTecnico || "Não Atribuído",
-        status: os.statusOrdemdeServico?.name || "N/A",
-        descricao: os.descricaodoProblemaouSolicitacao || "",
-      });
-    });
-
+    // Altere o seu forEach para ficar exatamente assim:
+controles.forEach((os: any) => {
+  worksheet.addRow({
+    numeroOS: os.numeroOS || "N/A",
+    created_at: os.created_at ? new Date(os.created_at).toLocaleString('pt-BR') : "",
+    // O TS reclama porque 'tarefa' é um objeto relacionado. 
+    // Certifique-se de que o 'select' no Service inclui o campo 'tarefa'
+    tarefa: os.tarefa?.name || "Não definida",
+    cliente: os.cliente?.name || "Sem Cliente",
+    unidade: os.instituicaoUnidade?.name || "Sem Unidade",
+    tecnico: os.tecnico?.name || os.nameTecnico || "Não Atribuído",
+    status: os.statusOrdemdeServico?.name || "N/A",
+    descricao: os.descricaodoProblemaouSolicitacao || "",
+  });
+});
     // Estilização básica do cabeçalho
     // 1. Estilizar a linha do Cabeçalho (Linha 1) com a cor do sistema #4E3182
 const headerRow = worksheet.getRow(1);
