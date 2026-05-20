@@ -48,7 +48,7 @@ class ExportOrdemdeServicoController {
     ];
 
     // 3. Mapeamento seguro usando a interface definida
-    controles.forEach((os: OSData) => {
+    controles.forEach((os: any) => {
       worksheet.addRow({
         numeroOS: os.numeroOS || "N/A",
         created_at: os.created_at ? new Date(os.created_at).toLocaleString('pt-BR') : "",
