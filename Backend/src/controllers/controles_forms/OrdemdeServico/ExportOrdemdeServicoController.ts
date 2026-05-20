@@ -17,6 +17,10 @@ interface OSData {
 
 class ExportOrdemdeServicoController {
   async handle(req: Request, res: Response) {
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+    res.setHeader("Surrogate-Control", "no-store");
     const user_id = req.user_id as string;
     const { startDate, endDate, cliente_id, instituicao_id, tarefa_id } = req.query;
 

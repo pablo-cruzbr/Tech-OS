@@ -3,6 +3,10 @@ import { ListOrdemdeServicoService } from "../../../services/controles_forms/Ord
 
 class ListOrdemdeServicoController {
     async handle(req: Request, res: Response) {
+        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
+
         const user_id = req.user_id as string;
 
         const { 
