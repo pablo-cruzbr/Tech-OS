@@ -2,6 +2,19 @@ import { Request, Response } from "express";
 import { ListOrdemdeServicoService } from "../../../services/controles_forms/OrdemdeServico/ListOrdemdeServicoService";
 import ExcelJS from "exceljs";
 
+// Definindo a interface para garantir que o TS entenda a estrutura dos dados vindos do banco
+interface OSData {
+  numeroOS?: string | null;
+  created_at?: Date | string;
+  tarefa?: { name: string } | null;
+  cliente?: { name: string } | null;
+  instituicaoUnidade?: { name: string } | null;
+  tecnico?: { name: string } | null;
+  nameTecnico?: string | null;
+  statusOrdemdeServico?: { name: string } | null;
+  descricaodoProblemaouSolicitacao?: string | null;
+}
+
 class ExportOrdemdeServicoController {
   async handle(req: Request, res: Response) {
     const user_id = req.user_id as string;
@@ -9,7 +22,7 @@ class ExportOrdemdeServicoController {
 
     const listService = new ListOrdemdeServicoService();
 
-    // 1. Reutilizamos o Service de Listagem para pegar os dados filtrados
+    // 1. Obtém os dados
     const { controles } = await listService.execute({
       user_id,
       startDate: startDate as string,
@@ -19,11 +32,10 @@ class ExportOrdemdeServicoController {
       tarefa_id: tarefa_id as string,
     });
 
-    // 2. Iniciamos a criação da Planilha
+    // 2. Configura a Planilha
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Relatório de OS");
 
-    // 3. Definimos as colunas (Headers)
     worksheet.columns = [
       { header: "Nº OS", key: "numeroOS", width: 10 },
       { header: "DATA CADASTRO", key: "created_at", width: 20 },
@@ -35,86 +47,46 @@ class ExportOrdemdeServicoController {
       { header: "HISTÓRICO/DESCRIÇÃO", key: "descricao", width: 50 },
     ];
 
-    // 4. Mapeamos os dados do banco para as linhas do Excel
-    // Altere o seu forEach para ficar exatamente assim:
-controles.forEach((os: any) => {
-  worksheet.addRow({
-    numeroOS: os.numeroOS || "N/A",
-    created_at: os.created_at ? new Date(os.created_at).toLocaleString('pt-BR') : "",
-    // O TS reclama porque 'tarefa' é um objeto relacionado. 
-    // Certifique-se de que o 'select' no Service inclui o campo 'tarefa'
-    tarefa: os.tarefa?.name || "Não definida",
-    cliente: os.cliente?.name || "Sem Cliente",
-    unidade: os.instituicaoUnidade?.name || "Sem Unidade",
-    tecnico: os.tecnico?.name || os.nameTecnico || "Não Atribuído",
-    status: os.statusOrdemdeServico?.name || "N/A",
-    descricao: os.descricaodoProblemaouSolicitacao || "",
-  });
-});
-    // Estilização básica do cabeçalho
-    // 1. Estilizar a linha do Cabeçalho (Linha 1) com a cor do sistema #4E3182
-const headerRow = worksheet.getRow(1);
-
-headerRow.eachCell((cell) => {
-  cell.fill = {
-    type: 'pattern',
-    pattern: 'solid',
-    fgColor: { argb: 'FF4E3182' }, // Cor do seu sistema (Roxo)
-  };
-  cell.font = {
-    bold: true,
-    color: { argb: 'FFFFFFFF' }, // Texto Branco para dar contraste
-    size: 11
-  };
-  cell.alignment = { vertical: 'middle', horizontal: 'center' };
-  
-  // Bordas brancas no cabeçalho ficam bem elegantes com fundo escuro
-  cell.border = {
-    top: { style: 'thin', color: { argb: 'FFFFFFFF' } },
-    left: { style: 'thin', color: { argb: 'FFFFFFFF' } },
-    bottom: { style: 'thin', color: { argb: 'FFFFFFFF' } },
-    right: { style: 'thin', color: { argb: 'FFFFFFFF' } }
-  };
-});
-
-// 2. Aplicar bordas cinzas e alinhamento nas linhas de dados
-worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
-  if (rowNumber > 1) {
-    row.eachCell((cell) => {
-      cell.border = {
-        top: { style: 'thin', color: { argb: 'FFD3D3D3' } },
-        left: { style: 'thin', color: { argb: 'FFD3D3D3' } },
-        bottom: { style: 'thin', color: { argb: 'FFD3D3D3' } },
-        right: { style: 'thin', color: { argb: 'FFD3D3D3' } }
-      };
-      cell.alignment = { 
-        vertical: 'middle', 
-        horizontal: 'left', 
-        wrapText: true 
-      };
+    // 3. Mapeamento seguro usando a interface definida
+    controles.forEach((os: OSData) => {
+      worksheet.addRow({
+        numeroOS: os.numeroOS || "N/A",
+        created_at: os.created_at ? new Date(os.created_at).toLocaleString('pt-BR') : "",
+        tarefa: os.tarefa?.name || "Não definida",
+        cliente: os.cliente?.name || "Sem Cliente",
+        unidade: os.instituicaoUnidade?.name || "Sem Unidade",
+        tecnico: os.tecnico?.name || os.nameTecnico || "Não Atribuído",
+        status: os.statusOrdemdeServico?.name || "N/A",
+        descricao: os.descricaodoProblemaouSolicitacao || "",
+      });
     });
-    
-    // Deixar as linhas com uma altura boa para leitura
-    row.height = 22;
-  }
-});
 
-// 3. Ajuste fino: Congelar o cabeçalho para que ele não suma ao dar scroll
-worksheet.views = [
-  { state: 'frozen', xSplit: 0, ySplit: 1 }
-];
+    // 4. Estilização
+    const headerRow = worksheet.getRow(1);
+    headerRow.eachCell((cell) => {
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4E3182' } };
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 11 };
+      cell.alignment = { vertical: 'middle', horizontal: 'center' };
+      cell.border = { top: { style: 'thin', color: { argb: 'FFFFFFFF' } }, left: { style: 'thin', color: { argb: 'FFFFFFFF' } }, bottom: { style: 'thin', color: { argb: 'FFFFFFFF' } }, right: { style: 'thin', color: { argb: 'FFFFFFFF' } } };
+    });
 
-    // 5. Response para Download de Arquivo
-    res.setHeader(
-      "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    );
-    res.setHeader(
-      "Content-Disposition",
-      "attachment; filename=" + `Relatorio_OS_${Date.now()}.xlsx`
-    );
+    worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+      if (rowNumber > 1) {
+        row.eachCell((cell) => {
+          cell.border = { top: { style: 'thin', color: { argb: 'FFD3D3D3' } }, left: { style: 'thin', color: { argb: 'FFD3D3D3' } }, bottom: { style: 'thin', color: { argb: 'FFD3D3D3' } }, right: { style: 'thin', color: { argb: 'FFD3D3D3' } } };
+          cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+        });
+        row.height = 22;
+      }
+    });
 
-    // Escreve o buffer e envia para o cliente
+    worksheet.views = [{ state: 'frozen', xSplit: 0, ySplit: 1 }];
+
+    // 5. Cabeçalhos de resposta (Cache control adicionado para resolver o 304)
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.setHeader("Content-Disposition", `attachment; filename=Relatorio_OS_${Date.now()}.xlsx`);
+
     await workbook.xlsx.write(res);
     res.status(200).end();
   }
