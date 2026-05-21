@@ -104,10 +104,14 @@ const loadOrdens = async () => {
       headers: { Authorization: `Bearer ${token}` },
     });
 
+    console.log("QTD DE ORDENS RECEBIDAS:", response.data.controles?.length);
+console.log("DADOS COMPLETOS:", JSON.stringify(response.data.controles, null, 2));
+
     const ordens = response.data.controles || []; 
     
     setOrdensDeServico(ordens);
     setFilteredOrdens(ordens);
+    console.log("QTD FINAL NA LISTA:", filteredOrdens.length);
   } catch (error) {
     console.error("Erro ao carregar ordens de serviço:", error);
   } finally {
@@ -291,46 +295,54 @@ const loadOrdens = async () => {
       <FlatList
         data={filteredOrdens}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => {
-              setSelectedOrdem(item);
-              setModalOsVisible(true);
-            }}
-          >
-            <View style={styles.cardInfo}>
-              <Text style={styles.cardTitle}>
-                Número da OS: {item.numeroOS || "Não Disponível"}
-              </Text>
-              <Text style={styles.cardStatus}>
-                Status da OS: {item.statusOrdemdeServico?.name || "N/A"}
-              </Text>
+       renderItem={({ item }) => (
+  <TouchableOpacity
+    style={styles.card}
+    onPress={() => {
+      setSelectedOrdem(item);
+      setModalOsVisible(true);
+    }}
+  >
+    <View style={styles.cardInfo}>
+      <Text style={styles.cardTitle}>
+        Número da OS: {item?.numeroOS ?? "N/A"}
+      </Text>
+      
+      <Text style={styles.cardStatus}>
+        Status: {item?.statusOrdemdeServico?.name ?? "Não definido"}
+      </Text>
 
-              {item.cliente && (
-                <>
-                  <Text style={styles.cardSubtitle}>Empresa: {item.cliente.name}</Text>
-                  <Text style={styles.cardSubtitle}>Endereço: {item.cliente.endereco}</Text>
-                </>
-              )}
+      {/* Uso de Optional Chaining (?.) e Operador de Coalescência (??) */}
+      {item?.cliente?.name && (
+        <Text style={styles.cardSubtitle}>
+          Empresa: {item.cliente.name}
+        </Text>
+      )}
+      
+      {item?.cliente?.endereco && (
+        <Text style={styles.cardSubtitle}>
+          Endereço: {item.cliente.endereco}
+        </Text>
+      )}
 
-              {item.instituicaoUnidade && (
-                <>
-                  <Text style={styles.cardSubtitle}>Instituição: {item.instituicaoUnidade.name}</Text>
-                  <Text style={styles.cardSubtitle}>Endereço: {item.instituicaoUnidade.endereco}</Text>
-                </>
-              )}
+      {item?.instituicaoUnidade?.name && (
+        <Text style={styles.cardSubtitle}>
+          Instituição: {item.instituicaoUnidade.name}
+        </Text>
+      )}
 
-              <Text style={styles.cardItem}>
-                Problema: {item.descricaodoProblemaouSolicitacao}
-              </Text>
-              <Text style={styles.cardItem}>
-                Contato: {item.nomedoContatoaserProcuradonoLocal}
-              </Text>
-            </View>
-            <Ionicons name="ellipsis-vertical" size={20} color="#333" />
-          </TouchableOpacity>
-        )}
+      <Text style={styles.cardItem}>
+        Problema: {item?.descricaodoProblemaouSolicitacao || "Sem descrição"}
+      </Text>
+      
+      <Text style={styles.cardItem}>
+        Contato: {item?.nomedoContatoaserProcuradonoLocal || "Não informado"}
+      </Text>
+    </View>
+    
+    <Ionicons name="ellipsis-vertical" size={20} color="#333" />
+  </TouchableOpacity>
+)}
         contentContainerStyle={{ paddingBottom: 90, paddingTop: 10 }}
       />
 
