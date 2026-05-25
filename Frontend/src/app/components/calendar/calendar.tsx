@@ -7,6 +7,7 @@ import { useGlobalModal } from "@/provider/GlobalModalProvider";
 
 import "dhtmlx-scheduler/codebase/dhtmlxscheduler.css";
 import "./calendar.css";
+import styles from "./calendarModal.module.scss";
 
 interface CalendarProps {
   initialToken?: string;
@@ -14,7 +15,8 @@ interface CalendarProps {
 }
 
 interface PendingReschedule {
-  ev: any;
+  id: string;
+  newDate: Date;
   oldDate: Date;
 }
 
@@ -26,12 +28,13 @@ export default function Calendar({ initialToken, events }: CalendarProps) {
 
   const [pending, setPending] = useState<PendingReschedule | null>(null);
   const [saving, setSaving] = useState(false);
+  const [schedulerReady, setSchedulerReady] = useState(false);
 
-  // Ref para evitar que o modal abra duas vezes
   const pendingRef = useRef<PendingReschedule | null>(null);
 
   const parseToScheduler = useCallback((data: any[]) => {
     return data.map((os: any) => {
+      console.log(`[CAL] parseToScheduler OS ${os.numeroOS} → agendadoEm: ${os.agendadoEm} | created_at: ${os.created_at}`);
       const startDate = os.agendadoEm
         ? new Date(os.agendadoEm)
         : new Date(os.created_at);
@@ -47,38 +50,47 @@ export default function Calendar({ initialToken, events }: CalendarProps) {
     });
   }, []);
 
-  const updateEventOnServer = async (ev: any) => {
+  const updateEventOnServer = async (id: string, newDate: Date) => {
     const token = initialToken || (await getCookieClient());
-    await api.patch(
-      `/ordemdeservico/update/${ev.id}`,
-      { agendadoEm: ev.start_date },
+    console.log("[CAL] updateEventOnServer → id:", id, "| newDate:", newDate.toISOString(), "| token:", token ? "ok" : "MISSING");
+    const response = await api.patch(
+      `/ordemdeservico/update/${id}`,
+      { agendadoEm: newDate.toISOString() },
       { headers: { Authorization: `Bearer ${token}` } }
     );
+    console.log("[CAL] PATCH response status:", response.status);
+    console.log("[CAL] PATCH agendadoEm salvo:", response.data?.ordem?.agendadoEm);
+    return response;
   };
 
   const handleConfirm = async () => {
-    if (!pendingRef.current) return;
+    console.log("[CAL] handleConfirm chamado | pendingRef:", pendingRef.current);
+    if (!pendingRef.current) {
+      console.warn("[CAL] handleConfirm: pendingRef é null, abortando");
+      return;
+    }
+    const { id, newDate } = pendingRef.current;
+    console.log("[CAL] Confirmando reagendamento → id:", id, "| newDate:", newDate);
     setSaving(true);
     try {
-      await updateEventOnServer(pendingRef.current.ev);
+      await updateEventOnServer(id, newDate);
+      console.log("[CAL] PATCH concluído com sucesso");
 
-      // Atualiza o rawTicket em memória para futuras movimentações
       const scheduler = schedulerInstance.current;
       if (scheduler) {
-        const ev = scheduler.getEvent(pendingRef.current.ev.id);
+        const ev = scheduler.getEvent(id);
         if (ev?.rawTicket) {
-          ev.rawTicket.agendadoEm = pendingRef.current.ev.start_date;
+          ev.rawTicket.agendadoEm = newDate.toISOString();
         }
       }
-    } catch (err) {
-      console.error("Erro ao reagendar:", err);
+    } catch (err: any) {
+      console.error("[CAL] ERRO no PATCH:", err?.response?.status, err?.response?.data ?? err?.message ?? err);
       revertEvent(pendingRef.current);
     } finally {
       setSaving(false);
       pendingRef.current = null;
       setPending(null);
 
-      // Reativa o drag após confirmar
       const scheduler = schedulerInstance.current;
       if (scheduler) {
         scheduler.config.drag_move = true;
@@ -90,11 +102,11 @@ export default function Calendar({ initialToken, events }: CalendarProps) {
   const revertEvent = (p: PendingReschedule) => {
     const scheduler = schedulerInstance.current;
     if (!scheduler) return;
-    const ev = scheduler.getEvent(p.ev.id);
+    const ev = scheduler.getEvent(p.id);
     if (ev) {
       ev.start_date = new Date(p.oldDate);
       ev.end_date = new Date(p.oldDate.getTime() + 30 * 60 * 1000);
-      scheduler.updateEvent(ev.id);
+      scheduler.updateEvent(p.id);
     }
   };
 
@@ -130,18 +142,7 @@ export default function Calendar({ initialToken, events }: CalendarProps) {
       if (containerRef.current) {
         scheduler.init(containerRef.current, new Date(), "month");
         isInitialized.current = true;
-
-        if (events && events.length > 0) {
-          scheduler.parse(parseToScheduler(events));
-        } else {
-          const token = initialToken || (await getCookieClient());
-          if (token) {
-            const { data } = await api.get("/ordens", {
-              headers: { Authorization: `Bearer ${token}` },
-            });
-            scheduler.parse(parseToScheduler(data?.controles || []));
-          }
-        }
+        setSchedulerReady(true);
       }
 
       scheduler.attachEvent("onClick", (id: string) => {
@@ -167,10 +168,13 @@ export default function Calendar({ initialToken, events }: CalendarProps) {
       );
 
       scheduler.attachEvent("onEventChanged", (_id: string, ev: any) => {
+        console.log("[CAL] onEventChanged → ev.id:", ev.id, "| start_date:", ev.start_date, "| oldDateBeforeMove:", oldDateBeforeMove);
         const p: PendingReschedule = {
-          ev,
+          id: String(ev.id),
+          newDate: new Date(ev.start_date),
           oldDate: oldDateBeforeMove ?? new Date(ev.start_date),
         };
+        console.log("[CAL] pending gerado:", p);
         pendingRef.current = p;
         setPending(p);
 
@@ -182,7 +186,34 @@ export default function Calendar({ initialToken, events }: CalendarProps) {
     };
 
     initScheduler();
-  }, [events, parseToScheduler, initialToken, openModal]);
+  }, [parseToScheduler, initialToken, openModal]);
+
+  useEffect(() => {
+    if (!schedulerReady || !schedulerInstance.current) return;
+    console.log("[CAL] sync events effect → events.length:", events?.length ?? 0);
+    if (events?.[0]) {
+      const first = events[0] as any;
+      console.log("[CAL] primeiro evento raw keys:", Object.keys(first));
+      console.log("[CAL] primeiro evento agendadoEm:", first.agendadoEm, "| type:", typeof first.agendadoEm);
+      console.log("[CAL] primeiro evento created_at:", first.created_at);
+    }
+    const scheduler = schedulerInstance.current;
+    scheduler.clearAll();
+    if (events && events.length > 0) {
+      scheduler.parse(parseToScheduler(events));
+    } else {
+      const fetch = async () => {
+        const token = initialToken || (await getCookieClient());
+        if (token) {
+          const { data } = await api.get("/listordemdeservico", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          scheduler.parse(parseToScheduler(data?.controles || []));
+        }
+      };
+      fetch();
+    }
+  }, [schedulerReady, events, parseToScheduler, initialToken]);
 
   const formatDate = (d: Date) =>
     new Intl.DateTimeFormat("pt-BR", { dateStyle: "long" }).format(new Date(d));
@@ -191,31 +222,40 @@ export default function Calendar({ initialToken, events }: CalendarProps) {
     <div style={{ width: "100%", marginTop: "20px" }}>
 
       {pending && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4">
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">
-              Confirmar reagendamento
-            </h2>
-            <p className="text-gray-600 text-sm mb-1">
-              <span className="font-medium">De:</span> {formatDate(pending.oldDate)}
-            </p>
-            <p className="text-gray-600 text-sm mb-5">
-              <span className="font-medium">Para:</span> {formatDate(pending.ev.start_date)}
-            </p>
-            <div className="flex gap-3 justify-end">
+        <div className={styles.overlay}>
+          <div className={styles.modal}>
+            <h2 className={styles.title}>Confirmar reagendamento</h2>
+
+            <div className={styles.infoBox}>
+              <p className={styles.infoRow}>
+                <strong>De:</strong> {formatDate(pending.oldDate)}
+              </p>
+              <p className={styles.infoRow}>
+                <strong>Para:</strong> {formatDate(pending.newDate)}
+              </p>
+            </div>
+
+            <div className={styles.actions}>
               <button
                 onClick={handleCancel}
                 disabled={saving}
-                className="px-4 py-2 rounded-lg text-sm text-gray-600 border border-gray-300 hover:bg-gray-50 transition"
+                className={styles.btnCancel}
               >
                 Cancelar
               </button>
               <button
                 onClick={handleConfirm}
                 disabled={saving}
-                className="px-4 py-2 rounded-lg text-sm text-white bg-blue-600 hover:bg-blue-700 transition disabled:opacity-60"
+                className={styles.btnConfirm}
               >
-                {saving ? "Salvando..." : "Confirmar"}
+                {saving ? (
+                  <>
+                    <span className={styles.spinner} />
+                    Salvando...
+                  </>
+                ) : (
+                  "Confirmar"
+                )}
               </button>
             </div>
           </div>

@@ -55,7 +55,7 @@ class ListOrdemdeServicoService {
       whereCondition.agendadoEm = {};
       
       if (startDate) {
-        whereCondition.created_at.gte = new Date(startDate);
+        whereCondition.agendadoEm.gte = new Date(startDate);
       }
       
       if (endDate) {
@@ -80,6 +80,7 @@ class ListOrdemdeServicoService {
     }
 
     // Busca principal com os filtros acumulados
+    console.log("[LIST-OS] iniciando query Prisma | whereCondition:", JSON.stringify(whereCondition));
     const controles = await prismaClient.ordemdeServico.findMany({
       where: whereCondition,
       orderBy: {
@@ -163,6 +164,7 @@ class ListOrdemdeServicoService {
       },
     });
 
+    console.log("[LIST-OS] primeiros 2 resultados agendadoEm:", controles.slice(0, 2).map(c => ({ id: c.id, numeroOS: c.numeroOS, agendadoEm: c.agendadoEm })));
     const [
       total, 
       totalAberta,
