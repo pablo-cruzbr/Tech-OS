@@ -31,6 +31,7 @@ type UpdateOrdemdeServicoRequest = {
   endedAt?: string;
   duracao?: number;
   atividades_ids?: string;
+  agendadoEm?: string; 
 };
 
 class UpdateOrdemdeServicoService {
@@ -75,6 +76,8 @@ class UpdateOrdemdeServicoService {
       if (body.duracao !== undefined) updateData.duracao = Number(body.duracao);
       if (body.startedAt) updateData.startedAt = new Date(body.startedAt);
       if (body.endedAt) updateData.endedAt = new Date(body.endedAt);
+      if (body.agendadoEm) updateData.agendadoEm = new Date(body.agendadoEm);
+
 
       const statusId = body.statusOrdemdeServico_id || body.statusOrdemdeServico?.connect?.id;
       if (statusId) {
