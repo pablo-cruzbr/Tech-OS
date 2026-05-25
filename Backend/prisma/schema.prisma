@@ -188,6 +188,7 @@ model OrdemdeServico {
   assinaturaDigital                 String? 
   created_at                        DateTime?             @default(now())
   updatedAt                         DateTime?             @updatedAt @map("updated_at") 
+  agendadoEm                        DateTime? 
   tecnico_id                        String?
   statusOrdemdeServico_id           String?
   tipodeChamado_id                  String
