@@ -105,7 +105,7 @@ $transition-fast: 0.3s ease;
   padding: 0 1rem;
   align-items: center;
   transition: $transition-fast;
-  margin-bottom: 15px; 
+  margin-bottom: 15px;
 
   &:focus-within {
     background-color: darken($bg-input, 3%);
@@ -153,39 +153,6 @@ $transition-fast: 0.3s ease;
     }
   }
 }
-  .icon {
-    color: #acacac;
-    font-size: 1.1rem;
-    display: flex;
-    justify-content: center;
-  }
-
-  input, .select, textarea {
-    border: none;
-    outline: none;
-    background: none;
-    font-size: 1rem;
-    font-weight: 500;
-    color: #333;
-    width: 100%;
-
-    &::placeholder { color: #aaa; }
-  }
-
-  &.textArea {
-    height: auto;
-    min-height: 120px;
-    border-radius: 20px;
-    align-items: flex-start;
-    padding: 15px 1rem;
-
-    textarea {
-      height: 100px;
-      resize: none;
-      line-height: 1.5;
-    }
-  }
-
 
 // --- PAINEL ROXO (ESQUERDA) ---
 .panelsContainer {
@@ -251,7 +218,7 @@ $transition-fast: 0.3s ease;
   &.solid {
     background-color: $primary-purple;
     color: $white;
-    width: 100%; // No modal o botão de enviar ocupa tudo
+    width: 100%;
     margin-top: 20px;
     &:hover { background-color: lighten($primary-purple, 5%); transform: translateY(-2px); }
   }
