@@ -6,12 +6,21 @@
   "build": {
     "preview": {
       "distribution": "store",
+      "channel": "preview",
       "android": {
         "buildType": "apk"
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://allti-control-backend.vercel.app/"
       }
+    }
+  },
+  "update": {
+    "production": {
+      "channel": "production"
+    },
+    "preview": {
+      "channel": "preview"
     }
   }
 }
