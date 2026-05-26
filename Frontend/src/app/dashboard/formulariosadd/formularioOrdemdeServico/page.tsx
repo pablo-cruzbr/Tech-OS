@@ -193,8 +193,8 @@ export default function FormularioOrdemdeServico() {
     <section className={styles.pageWrapper}>
       <div className={styles.headerClient}>
         <h1 className={styles.titleClient}>FORMULÁRIO ORDEM DE SERVIÇO</h1>
-        <IoArrowBackCircleOutline size={30} color="#4B4B4B" onClick={handleBack} style={{ cursor: 'pointer' }} />
         <button className={styles.button} onClick={handleBack}>
+          <IoArrowBackCircleOutline size={25} color="#ffff" onClick={handleBack} style={{ cursor: 'pointer' }} />
           Voltar
         </button>
       </div>
