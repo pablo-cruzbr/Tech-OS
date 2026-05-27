@@ -32,7 +32,7 @@ export default function TicketsList({ ticketsData, tokenDoServidor }: Props) {
   return (
     <>
       <div className={styles.headerClient}>
-        <h1 className={styles.titleClient}>Dashboard Administrativo</h1>
+        <h1 className={styles.titleClient}>Visualize seus Tickets ou Ordens de Serviço</h1>
         <div className={styles.actions}>
           <button className={styles.button} onClick={handleListTickets}>
             Lista de Chamados
@@ -41,27 +41,29 @@ export default function TicketsList({ ticketsData, tokenDoServidor }: Props) {
         </div>
       </div>
 
-      <div className={styles.cardsContainer}>
-        <div className={styles.card}>
-          <p className={styles.cardTitle}>Total</p>
-          <strong className={styles.cardNumber}>{total}</strong>
-        </div>
+    {/* 
+  <div className={styles.cardsContainer}>
+    <div className={styles.card}>
+      <p className={styles.cardTitle}>Total</p>
+      <strong className={styles.cardNumber}>{total}</strong>
+    </div>
 
-        <div className={styles.card}>
-          <p className={styles.cardTitle}>OS Aberta</p>
-          <strong className={styles.cardNumber}>{totalAberta}</strong>
-        </div>
+    <div className={styles.card}>
+      <p className={styles.cardTitle}>OS Aberta</p>
+      <strong className={styles.cardNumber}>{totalAberta}</strong>
+    </div>
 
-        <div className={styles.card}>
-          <p className={styles.cardTitle}>OS em Andamento</p>
-          <strong className={styles.cardNumber}>{totalEmAndamento}</strong>
-        </div>
+    <div className={styles.card}>
+      <p className={styles.cardTitle}>OS em Andamento</p>
+      <strong className={styles.cardNumber}>{totalEmAndamento}</strong>
+    </div>
 
-        <div className={styles.card}>
-          <p className={styles.cardTitle}>OS Concluída</p>
-          <strong className={styles.cardNumber}>{totalConcluida}</strong>
-        </div>
-      </div>
+    <div className={styles.card}>
+      <p className={styles.cardTitle}>OS Concluída</p>
+      <strong className={styles.cardNumber}>{totalConcluida}</strong>
+    </div>
+  </div> 
+*/}
    
       <div className={styles.headerClient} style={{ marginTop: '40px' }}>
         <h1 className={styles.titleClient}>Calendário Técnico</h1>

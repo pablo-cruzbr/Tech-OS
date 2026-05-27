@@ -9,6 +9,8 @@ import { logoutAction } from "@/actions/logout";
 import { api } from "@/services/api";
 
 import { BiHome, BiTask, BiChevronDown, BiChevronUp } from "react-icons/bi";
+import { IoCalendarNumberOutline } from "react-icons/io5";
+
 import { IoGameControllerOutline, IoEnterOutline } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
 import { SiGoogledocs } from "react-icons/si";
@@ -151,9 +153,11 @@ export default function Sidebar() {
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '10px', paddingTop: '10px' }}>
             <p style={{ fontSize: '10px', color: '#ffd700', marginLeft: '15px', marginBottom: '5px' }}>ADMINISTRAÇÃO</p>
             
-            <Link href="/dashboard/ticketscount" className={styles.item}>
-              <BiHome /> <span>Dashboard</span>
+            <Link href="/dashboard/ticketscount" className={styles.item}> 
+              <IoCalendarNumberOutline /> 
+              <span style={{ fontSize: "16px" }}>Calendario Técnico</span> 
             </Link>
+
             
             <div className={styles.itemContainer}>
               <div className={styles.item} onClick={() => toggleDropdown("controles")} style={{ cursor: "pointer" }}>
