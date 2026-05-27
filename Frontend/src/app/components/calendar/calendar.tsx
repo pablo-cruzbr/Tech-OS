@@ -172,17 +172,26 @@ export default function Calendar({ initialToken, events }: CalendarProps) {
             e.stopPropagation();
             e.preventDefault();
 
-            // Walk up ancestors until we find a container with .dhx_month_head (day number)
-            let dayNum = 0;
-            let el: HTMLElement | null = link.parentElement;
-            while (el && el !== containerRef.current) {
-              const head = el.querySelector(".dhx_month_head");
-              if (head) {
-                const n = parseInt(head.textContent?.trim() ?? "", 10);
-                if (n > 0 && n <= 31) { dayNum = n; break; }
-              }
-              el = el.parentElement;
+            // The "mais" link is absolutely positioned by DHTMLX outside the cell DOM,
+            // so DOM traversal finds the wrong ancestor. Instead, use screen position:
+            // find the .dhx_month_head that is directly above the link and horizontally aligned.
+            const linkRect = link.getBoundingClientRect();
+            const heads = Array.from(
+              containerRef.current!.querySelectorAll(".dhx_month_head")
+            ) as HTMLElement[];
+
+            let bestHead: HTMLElement | null = null;
+            let bestDist = Infinity;
+            for (const head of heads) {
+              const hr = head.getBoundingClientRect();
+              if (hr.bottom > linkRect.top) continue; // head must be above the link
+              const overlap = Math.min(hr.right, linkRect.right) - Math.max(hr.left, linkRect.left);
+              if (overlap <= 0) continue; // must share horizontal space (same column)
+              const dist = linkRect.top - hr.bottom;
+              if (dist < bestDist) { bestDist = dist; bestHead = head; }
             }
+
+            const dayNum = parseInt(bestHead?.textContent?.trim() ?? "0", 10);
             if (!dayNum) return;
 
             const state = scheduler.getState();
