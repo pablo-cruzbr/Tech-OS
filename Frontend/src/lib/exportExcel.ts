@@ -9,6 +9,8 @@ interface ExportParams {
   tarefa_id?: string;
   cliente_id?: string;
   instituicao_id?: string;
+  status_id?: string;
+  tipoOS_id?: string;
 }
 
 export async function exportOrdemServicoExcel(params: ExportParams) {
