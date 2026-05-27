@@ -12,6 +12,7 @@ import { BiHome, BiTask, BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { IoGameControllerOutline, IoEnterOutline } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
 import { SiGoogledocs } from "react-icons/si";
+import { FaCalendarDays } from "react-icons/fa6";
 import { FiUserPlus } from "react-icons/fi";
 import { LiaUserAstronautSolid } from "react-icons/lia";
 
@@ -150,11 +151,13 @@ export default function Sidebar() {
         {isAdmin && (
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '10px', paddingTop: '10px' }}>
             <p style={{ fontSize: '10px', color: '#ffd700', marginLeft: '15px', marginBottom: '5px' }}>ADMINISTRAÇÃO</p>
-            
-            <Link href="/dashboard/ticketscount" className={styles.item}>
-              <BiHome /> <span>Dashboard</span>
-            </Link>
-            
+          <Link 
+            href="/dashboard/ticketscount" 
+            className={styles.item} 
+            style={{ fontSize: "17px" }} 
+          >
+            <FaCalendarDays /> <span  style={{ fontSize: "16px" }} >Calendário Técnico</span>
+          </Link>
             <div className={styles.itemContainer}>
               <div className={styles.item} onClick={() => toggleDropdown("controles")} style={{ cursor: "pointer" }}>
                 <IoGameControllerOutline /> <span>Controles</span>
