@@ -500,7 +500,7 @@
 .reportModal {
   background: #ffffff;
   width: 100%;
-  max-width: 520px;
+  max-width: 780px;
   border-radius: 20px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
   font-family: "Poppins", sans-serif;
@@ -550,9 +550,16 @@
 
 .reportModalBody {
   padding: 24px 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 20px;
+}
+
+.reportRowFull {
+  grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 6px;
 }
 
 .reportRow {

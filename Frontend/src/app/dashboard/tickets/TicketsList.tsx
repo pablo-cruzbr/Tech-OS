@@ -305,7 +305,7 @@ return value
         <button className={styles.reportModalClose} onClick={() => setIsReportOpen(false)}>✕</button>
       </div>
       <div className={styles.reportModalBody}>
-        <div className={styles.reportRow}>
+        <div className={styles.reportRowFull}>
           <label className={styles.reportLabel}>Período</label>
           <div className={styles.reportDateGroup}>
             <input
@@ -379,7 +379,7 @@ return value
             noOptionsMessage={() => 'Nenhum status encontrado'}
           />
         </div>
-        <div className={styles.reportRow}>
+        <div className={styles.reportRowFull}>
           <label className={styles.reportLabel}>Tipo de OS</label>
           <Select<SelectOption>
             options={tiposOrdem.map(t => ({ value: t.id, label: t.name }))}
