@@ -201,11 +201,14 @@ $transition-fast: 0.3s ease;
   padding: 8px 0;
 
   &::-webkit-scrollbar {
-    width: 4px;
+    width: 6px;
   }
   &::-webkit-scrollbar-thumb {
-    background: #d8ceee;
-    border-radius: 4px;
+    background: rgba(78, 49, 130, 0.22);
+    border-radius: 3px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(78, 49, 130, 0.45);
   }
 }
 

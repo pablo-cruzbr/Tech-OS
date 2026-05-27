@@ -40,6 +40,30 @@ a {
   text-decoration: none;
 }
 
+/* ── Global scrollbar – light theme ─────────────────────── */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(78, 49, 130, 0.22);
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(78, 49, 130, 0.45);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(78, 49, 130, 0.22) transparent;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
