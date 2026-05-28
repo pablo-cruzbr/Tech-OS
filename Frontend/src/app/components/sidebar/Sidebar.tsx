@@ -7,7 +7,6 @@ import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { logoutAction } from "@/actions/logout";
 import { api } from "@/services/api";
-
 import { BiHome, BiTask, BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { IoGameControllerOutline, IoEnterOutline } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
