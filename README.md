@@ -28,7 +28,7 @@
 
 ## 🎯 O Problema Real
 
-A [**Alltiservice**](https://alltiservice.com.br) é uma empresa de TI terceirizada com 22+ anos de mercado, prestando serviços para prefeituras, escolas e postos de saúde em Mogi das Cruzes/SP. Seus técnicos de campo perdiam horas por dia navegando por **5 a 6 telas diferentes** em sistemas legados para registrar uma única ordem de serviço — gastando mais tempo no software do que no hardware.
+A [**Alltiservice**](https://alltiservice.com.br) é uma empresa de TI terceirizada com 4+ anos de mercado, prestando serviços para prefeituras, escolas e postos de saúde em Mogi das Cruzes/SP. Seus técnicos de campo perdiam horas por dia navegando por **5 a 6 telas diferentes** em sistemas legados para registrar uma única ordem de serviço — gastando mais tempo no software do que no hardware.
 
 **O AlltiControl resolve isso** — construí o sistema internamente para a própria Alltiservice: gestão completa das ordens de serviço em **2 telas**, com app mobile para o técnico em campo e painel estratégico para o gestor. Atualmente em fase de implantação e testes dentro da empresa.
 
