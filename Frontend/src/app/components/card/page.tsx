@@ -12,15 +12,12 @@ export default function TicketsPage() {
   useEffect(() => {
     async function fetchTickets() {
       const token = await getCookieClient();
-      console.log("🔑 Token (client):", token);
-
       if (!token) return;
 
       try {
         const response = await api.get('/listordemdeservico', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("📩 Dados recebidos:", response.data);
         setTicketsData(response.data);
       } catch (err) {
         console.error("❌ Erro ao buscar tickets:", err);
