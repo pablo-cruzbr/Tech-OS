@@ -251,6 +251,7 @@ model AtividadeNoChamado {
 model AtividadePadrao {
   id        String             @id @default(uuid())
   descricao String
+  descricaoDetalhada String?
   categoria CategoriaAtividade
   
   chamados  AtividadeNoChamado[]
