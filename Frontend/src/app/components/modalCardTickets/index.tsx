@@ -261,7 +261,7 @@ export function ModalOrdemdeServico({ data }: ModalOrdemdeServicoProps) {
 
               <button
                 className={styles.buttonBuy}
-                onClick={() => window.open(`/dashboard/ordemdeservico/${localOS.id}`, '_blank')}
+                onClick={() => window.open(`/os-digital/${localOS.id}`, '_blank')}
               >
                 <FaFileAlt size={18} />
                 Ordem de Serviço Digital
