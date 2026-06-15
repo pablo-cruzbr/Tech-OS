@@ -72,7 +72,10 @@ export default function ViewCardFoto({ ordemdeServico, onClose }: Props) {
         formData.append("file", file);
         formData.append("ordemdeServico_id", ordemdeServico.id);
         const res = await api.post("/foto", formData, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": undefined,
+          },
         });
         const novas = Array.isArray(res.data) ? res.data : [res.data];
         setFotos((prev) => [...novas, ...prev]);
