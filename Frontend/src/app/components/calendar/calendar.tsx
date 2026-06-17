@@ -224,7 +224,6 @@ export default function Calendar({ initialToken, events }: CalendarProps) {
         return false;
       });
 
-      // Block the built-in "Novo evento" lightbox when clicking on empty slots
       scheduler.attachEvent("onBeforeEventCreated", () => false);
 
       let oldDateBeforeMove: Date | null = null;
@@ -232,7 +231,6 @@ export default function Calendar({ initialToken, events }: CalendarProps) {
       scheduler.attachEvent(
         "onBeforeEventChanged",
         (_ev: any, _e: any, is_new: boolean, original: any) => {
-          // Bloqueia nova movimentação se já tem uma pendente
           if (pendingRef.current) return false;
           if (!is_new) {
             oldDateBeforeMove = new Date(original.start_date);
