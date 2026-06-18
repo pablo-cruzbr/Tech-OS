@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { Button } from "./components/Button";
+import { loginSchema } from "@/lib/schemas/loginSchema";
 
 interface PageProps {
   searchParams: Promise<{ error?: string }>;
@@ -19,10 +20,18 @@ export default async function Home({ searchParams }: PageProps) {
   async function handleLogin(formData: FormData) {
     "use server";
 
-    const email = formData.get("email")?.toString();
-    const password = formData.get("password")?.toString();
+    const raw = {
+      email: formData.get("email")?.toString() ?? "",
+      password: formData.get("password")?.toString() ?? "",
+    };
 
-    if (!email || !password) return;
+    const parsed = loginSchema.safeParse(raw);
+    if (!parsed.success) {
+      const msg = parsed.error.errors[0]?.message || "Dados inválidos";
+      redirect(`/?error=${encodeURIComponent(msg)}`);
+    }
+
+    const { email, password } = parsed.data;
 
     try {
       const response = await api.post("/session", { email, password });
@@ -59,10 +68,12 @@ export default async function Home({ searchParams }: PageProps) {
     }
   }
 
-  const errorMsg = error === "no_admin" 
-    ? "Acesso negado: Este portal é exclusivo para Administradores e Técnicos." 
-    : error === "credentials" 
-    ? "E-mail ou senha incorretos." 
+  const errorMsg = error === "no_admin"
+    ? "Acesso negado: Este portal é exclusivo para Administradores e Técnicos."
+    : error === "credentials"
+    ? "E-mail ou senha incorretos."
+    : error
+    ? decodeURIComponent(error)
     : null;
 
   return (
