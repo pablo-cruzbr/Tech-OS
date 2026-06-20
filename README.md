@@ -256,7 +256,6 @@ Atualmente em fase de implantação e testes dentro da Alltiservice, gerenciando
 - [ ] Transcrição de áudio para documentação técnica (Expo Speech)
 - [ ] Validação de schema com Zod nas rotas da API
 - [ ] Testes automatizados com Jest (backend) e Playwright (web)
-- [ ] Deploy do frontend na Vercel
 
 ---
 
