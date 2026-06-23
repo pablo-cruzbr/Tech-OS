@@ -1,5 +1,5 @@
 import Image from "next/image";
-import logo from "../../assets/Logo9.svg";
+import logo from "../../assets/Fire-os-fundo-roxo.svg";
 import styles from "./logindeUsuario.module.scss";
 import { api } from "@/services/api";
 import { redirect } from "next/navigation";
@@ -93,7 +93,7 @@ export default function AreadeUsuario() {
           <div className={styles.content}>
             <Image
               src={logo}
-              alt="Logo AlltiControl"
+              alt="Logo Fire OS"
               width={400}
               height={500}
               className={styles.image}
