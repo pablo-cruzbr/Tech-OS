@@ -30,7 +30,6 @@ export function ModalDetailOrderFormOSTecnica({
 
   // Estados dos inputs
   const [nameTecnico, setNameTecnico] = useState('');
-  const [diagnostico, setDiagnostico] = useState('');
   const [solucao, setSolucao] = useState('');
 
   // Estados da assinatura e loading
@@ -95,7 +94,6 @@ export function ModalDetailOrderFormOSTecnica({
         `/ordemdeservico/update/${ordemId}`,
         {
           nameTecnico,
-          diagnostico,
           solucao,
           statusOrdemdeServico_id: 'fa69ed32-20b2-4d3a-9a6d-e61c5b45efea', // ID Concluída
         },
@@ -144,14 +142,6 @@ export function ModalDetailOrderFormOSTecnica({
               style={styles.input}
               value={nameTecnico}
               onChangeText={setNameTecnico}
-            />
-            <TextInput
-              placeholder="Diagnóstico Técnico"
-              style={[styles.input, styles.textArea]}
-              value={diagnostico}
-              onChangeText={setDiagnostico}
-              multiline
-              numberOfLines={3}
             />
             <TextInput
               placeholder="Solução Aplicada"
