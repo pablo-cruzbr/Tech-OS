@@ -294,7 +294,7 @@ export default function OSDigitalPage() {
             <tr>
               <td colSpan={2} className={styles.cell}>
                 <strong>3) Procedimento realizado. (resolução do atendimento)</strong>
-                <span className={styles.value}>{os.solucao || os.diagnostico || '-'}</span>
+                <span className={styles.value}>{os.solucao || '-'}</span>
                 {os.atividades && os.atividades.length > 0 && (
                   <div className={styles.atividadesBox}>
                     <strong className={styles.atividadesTitle}>Atividades realizadas:</strong>
