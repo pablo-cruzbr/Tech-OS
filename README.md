@@ -28,8 +28,6 @@
 
 https://github.com/user-attachments/assets/efd1a521-6f85-4665-85ff-24a6ef1e14bf
 
-<img width="1280" height="800" alt="Fire OS Dashboard" src="https://github.com/user-attachments/assets/d31a0cc7-cdcb-45d1-ba0e-5f8f706cc603" />
-
 ---
 
 ## 🎯 O Problema Real
