@@ -7,7 +7,7 @@ import ListOrdemdeServicoInterna from '../pages/ListOrdemdeServicoInterna';
 const Stack = createNativeStackNavigator();
 
 
-function appRoutes(){
+function AppRoutes(){
     return(
         <Stack.Navigator>
             <Stack.Screen 
@@ -24,4 +24,4 @@ function appRoutes(){
     )
 }
 
-export default appRoutes;
+export default AppRoutes;
